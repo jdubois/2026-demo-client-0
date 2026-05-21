@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import { createTicket, deleteTicket, findTickets, updateTicket } from '@/services/ticketApi'
+import { createTicket, deleteTicket, findTickets, findUsers, updateTicket } from '@/services/ticketApi'
 
 export const statuses = [
   { value: 'NEW', label: 'New', className: 'text-bg-primary' },
@@ -11,6 +11,7 @@ export const statuses = [
 
 export const useTicketsStore = defineStore('tickets', () => {
   const tickets = ref([])
+  const users = ref([])
   const loading = ref(false)
   const error = ref('')
 
@@ -38,6 +39,11 @@ export const useTicketsStore = defineStore('tickets', () => {
     }
   }
 
+  async function loadUsers() {
+    error.value = ''
+    users.value = await findUsers()
+  }
+
   async function saveTicket(ticket) {
     error.value = ''
     const savedTicket = ticket.id ? await updateTicket(ticket) : await createTicket(ticket)
@@ -62,11 +68,13 @@ export const useTicketsStore = defineStore('tickets', () => {
 
   return {
     tickets,
+    users,
     loading,
     error,
     total,
     readyToStart,
     completed,
+    loadUsers,
     loadTickets,
     saveTicket,
     removeTicket,

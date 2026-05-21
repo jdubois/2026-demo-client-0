@@ -1,7 +1,9 @@
 package com.example.ticketmanager.controller;
 
 import com.example.ticketmanager.domain.Ticket;
+import com.example.ticketmanager.domain.User;
 import com.example.ticketmanager.repository.TicketRepository;
+import com.example.ticketmanager.repository.UserRepository;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -24,9 +26,11 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 class TicketController {
 
     private final TicketRepository ticketRepository;
+    private final UserRepository userRepository;
 
-    TicketController(TicketRepository ticketRepository) {
+    TicketController(TicketRepository ticketRepository, UserRepository userRepository) {
         this.ticketRepository = ticketRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping
@@ -41,11 +45,13 @@ class TicketController {
 
     @PostMapping
     ResponseEntity<Ticket> create(@Valid @RequestBody TicketRequest ticketRequest) {
+        User assignee = getUser(ticketRequest.assigneeId());
         Ticket ticket = new Ticket(
             ticketRequest.title(),
             ticketRequest.repository(),
             ticketRequest.link(),
-            ticketRequest.status()
+            ticketRequest.status(),
+            assignee
         );
         Ticket savedTicket = ticketRepository.save(ticket);
         return ResponseEntity.created(URI.create("/api/tickets/" + savedTicket.getId())).body(savedTicket);
@@ -58,6 +64,7 @@ class TicketController {
         ticket.setRepository(ticketRequest.repository());
         ticket.setLink(ticketRequest.link());
         ticket.setStatus(ticketRequest.status());
+        ticket.setAssignee(getUser(ticketRequest.assigneeId()));
         return ticketRepository.save(ticket);
     }
 
@@ -74,5 +81,11 @@ class TicketController {
         return ticketRepository
             .findById(id)
             .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Ticket not found"));
+    }
+
+    private User getUser(Long id) {
+        return userRepository
+            .findById(id)
+            .orElseThrow(() -> new ResponseStatusException(NOT_FOUND, "Assignee not found"));
     }
 }

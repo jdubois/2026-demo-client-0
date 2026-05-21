@@ -7,6 +7,8 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -40,14 +42,20 @@ public class Ticket {
     @Column(nullable = false, length = 30)
     private TicketStatus status = TicketStatus.NEW;
 
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "assignee_id")
+    private User assignee;
+
     protected Ticket() {
     }
 
-    public Ticket(String title, String repository, String link, TicketStatus status) {
+    public Ticket(String title, String repository, String link, TicketStatus status, User assignee) {
         this.title = title;
         this.repository = repository;
         this.link = link;
         this.status = status;
+        this.assignee = assignee;
     }
 
     public Long getId() {
@@ -84,5 +92,13 @@ public class Ticket {
 
     public void setStatus(TicketStatus status) {
         this.status = status;
+    }
+
+    public User getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(User assignee) {
+        this.assignee = assignee;
     }
 }

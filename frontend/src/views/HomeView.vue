@@ -10,6 +10,7 @@ const emptyForm = {
   repository: '',
   link: '',
   status: 'NEW',
+  assigneeId: '',
 }
 
 const form = reactive({ ...emptyForm })
@@ -28,7 +29,14 @@ function resetForm() {
 }
 
 function editTicket(ticket) {
-  Object.assign(form, ticket)
+  Object.assign(form, {
+    id: ticket.id,
+    title: ticket.title,
+    repository: ticket.repository,
+    link: ticket.link,
+    status: ticket.status,
+    assigneeId: ticket.assignee?.id ?? '',
+  })
   actionError.value = ''
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
@@ -61,7 +69,7 @@ async function removeTicket(ticket) {
 }
 
 onMounted(() => {
-  ticketsStore.loadTickets().catch((error) => {
+  Promise.all([ticketsStore.loadUsers(), ticketsStore.loadTickets()]).catch((error) => {
     actionError.value = error.message
   })
 })
@@ -122,6 +130,16 @@ onMounted(() => {
               <select id="status" v-model="form.status" class="form-select" required>
                 <option v-for="status in statuses" :key="status.value" :value="status.value">
                   {{ status.label }}
+                </option>
+              </select>
+            </div>
+
+            <div class="mb-4">
+              <label for="assignee" class="form-label fw-semibold">Assignee</label>
+              <select id="assignee" v-model="form.assigneeId" class="form-select" required>
+                <option disabled value="">Choose a user</option>
+                <option v-for="user in ticketsStore.users" :key="user.id" :value="user.id">
+                  {{ user.username }}
                 </option>
               </select>
             </div>
@@ -202,6 +220,10 @@ onMounted(() => {
             <i class="bi bi-github me-2"></i>
             {{ ticket.repository }}
           </p>
+          <p class="assignee-name mb-4">
+            <i class="bi bi-person-circle me-2"></i>
+            Assigned to {{ ticket.assignee.username }}
+          </p>
 
           <div class="d-flex gap-2">
             <button
@@ -279,6 +301,11 @@ onMounted(() => {
 
 .repo-name {
   color: #64748b;
+  font-weight: 600;
+}
+
+.assignee-name {
+  color: #475569;
   font-weight: 600;
 }
 </style>
