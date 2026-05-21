@@ -1,0 +1,15 @@
+@import './base.css';
+
+body {
+  background:
+    radial-gradient(circle at top right, rgba(124, 58, 237, 0.14), transparent 26rem),
+    linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+}
+
+a {
+  text-decoration: none;
+}
+
+.btn {
+  font-weight: 700;
+}
