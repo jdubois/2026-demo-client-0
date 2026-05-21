@@ -74,15 +74,17 @@ onMounted(() => {
         <div class="card-body p-4">
           <div class="d-flex align-items-center justify-content-between mb-4">
             <div>
-              <p class="text-uppercase text-primary fw-bold small mb-1">Ticket details</p>
-              <h2 class="h4 fw-bold mb-0">{{ isEditing ? 'Edit ticket' : 'Add ticket' }}</h2>
+              <p class="text-uppercase text-primary fw-bold small mb-1">Détails du ticket</p>
+              <h2 class="h4 fw-bold mb-0">
+                {{ isEditing ? 'Modifier le ticket' : 'Ajouter un ticket' }}
+              </h2>
             </div>
             <i class="bi bi-ticket-perforated fs-2 text-primary"></i>
           </div>
 
           <form @submit.prevent="submitTicket">
             <div class="mb-3">
-              <label for="title" class="form-label fw-semibold">Title</label>
+              <label for="title" class="form-label fw-semibold">Titre</label>
               <input
                 id="title"
                 v-model.trim="form.title"
@@ -93,19 +95,19 @@ onMounted(() => {
             </div>
 
             <div class="mb-3">
-              <label for="repository" class="form-label fw-semibold">GitHub repository</label>
+              <label for="repository" class="form-label fw-semibold">Dépôt GitHub</label>
               <input
                 id="repository"
                 v-model.trim="form.repository"
                 class="form-control"
                 required
                 maxlength="120"
-                placeholder="owner/repository"
+                placeholder="proprietaire/depot"
               />
             </div>
 
             <div class="mb-3">
-              <label for="link" class="form-label fw-semibold">Issue link</label>
+              <label for="link" class="form-label fw-semibold">Lien de l'issue</label>
               <input
                 id="link"
                 v-model.trim="form.link"
@@ -118,7 +120,7 @@ onMounted(() => {
             </div>
 
             <div class="mb-4">
-              <label for="status" class="form-label fw-semibold">Status</label>
+              <label for="status" class="form-label fw-semibold">Statut</label>
               <select id="status" v-model="form.status" class="form-select" required>
                 <option v-for="status in statuses" :key="status.value" :value="status.value">
                   {{ status.label }}
@@ -137,7 +139,7 @@ onMounted(() => {
                   class="spinner-border spinner-border-sm me-2"
                   aria-hidden="true"
                 ></span>
-                {{ isEditing ? 'Save changes' : 'Add ticket' }}
+                {{ isEditing ? 'Enregistrer les modifications' : 'Ajouter le ticket' }}
               </button>
               <button
                 v-if="isEditing"
@@ -145,7 +147,7 @@ onMounted(() => {
                 type="button"
                 @click="resetForm"
               >
-                Cancel edit
+                Annuler la modification
               </button>
             </div>
           </form>
@@ -157,19 +159,19 @@ onMounted(() => {
       <div class="row g-3 mb-4">
         <div class="col-md-4">
           <div class="metric-card">
-            <span class="metric-label">Tracked tickets</span>
+            <span class="metric-label">Tickets suivis</span>
             <strong>{{ ticketsStore.total }}</strong>
           </div>
         </div>
         <div class="col-md-4">
           <div class="metric-card">
-            <span class="metric-label">Ready to help</span>
+            <span class="metric-label">Prêts à traiter</span>
             <strong>{{ ticketsStore.readyToStart }}</strong>
           </div>
         </div>
         <div class="col-md-4">
           <div class="metric-card">
-            <span class="metric-label">Completed</span>
+            <span class="metric-label">Terminés</span>
             <strong>{{ ticketsStore.completed }}</strong>
           </div>
         </div>
@@ -177,7 +179,7 @@ onMounted(() => {
 
       <div v-if="ticketsStore.loading" class="text-center py-5">
         <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Loading...</span>
+          <span class="visually-hidden">Chargement...</span>
         </div>
       </div>
 
@@ -210,7 +212,7 @@ onMounted(() => {
               @click="editTicket(ticket)"
             >
               <i class="bi bi-pencil me-1"></i>
-              Edit
+              Modifier
             </button>
             <button
               class="btn btn-outline-danger btn-sm"
@@ -218,7 +220,7 @@ onMounted(() => {
               @click="removeTicket(ticket)"
             >
               <i class="bi bi-trash me-1"></i>
-              Remove
+              Supprimer
             </button>
           </div>
         </article>

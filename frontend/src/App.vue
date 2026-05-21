@@ -10,20 +10,21 @@ import { RouterView } from 'vue-router'
           <div class="col-lg-8">
             <span class="badge rounded-pill text-bg-light text-primary mb-3">
               <i class="bi bi-github me-1"></i>
-              Java open source helper
+              Assistant open source Java
             </span>
             <h1 class="display-4 fw-bold mb-3">Ticket Scout</h1>
             <p class="lead mb-0">
-              Track good first issues from popular Java repositories, shortlist the best
-              opportunities, and follow progress until your contribution lands.
+              Suivez les issues pour débutants des dépôts Java populaires, sélectionnez les
+              meilleures opportunités et suivez leur progression jusqu'à l'intégration de votre
+              contribution.
             </p>
           </div>
           <div class="col-lg-4">
             <div class="hero-card">
               <i class="bi bi-stars fs-1"></i>
               <p class="mb-0 mt-3">
-                Seeded with GitHub tickets discovered through the MCP search for Java repositories
-                with more than 100 stars.
+                Préchargé avec des tickets GitHub découverts par la recherche MCP dans les dépôts
+                Java de plus de 100 étoiles.
               </p>
             </div>
           </div>
