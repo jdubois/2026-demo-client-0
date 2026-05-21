@@ -3,10 +3,10 @@ import { computed, ref } from 'vue'
 import { createTicket, deleteTicket, findTickets, findUsers, updateTicket } from '@/services/ticketApi'
 
 export const statuses = [
-  { value: 'NEW', label: 'New', className: 'text-bg-primary' },
-  { value: 'SHORTLISTED', label: 'Shortlisted', className: 'text-bg-info' },
-  { value: 'IN_PROGRESS', label: 'In progress', className: 'text-bg-warning' },
-  { value: 'DONE', label: 'Done', className: 'text-bg-success' },
+  { value: 'NEW', label: 'Nouveau', className: 'text-bg-primary' },
+  { value: 'SHORTLISTED', label: 'Présélectionné', className: 'text-bg-info' },
+  { value: 'IN_PROGRESS', label: 'En cours', className: 'text-bg-warning' },
+  { value: 'DONE', label: 'Terminé', className: 'text-bg-success' },
 ]
 
 export const useTicketsStore = defineStore('tickets', () => {
