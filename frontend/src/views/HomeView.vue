@@ -77,16 +77,16 @@ onMounted(() => {
   <div class="dashboard">
     <section class="dashboard-hero">
       <div>
-        <span class="section-kicker">Executive overview</span>
-        <h2 class="display-6 fw-bold mb-2">Govern open-source contribution intake</h2>
+        <span class="section-kicker">Vue d'ensemble stratégique</span>
+        <h2 class="display-6 fw-bold mb-2">Pilotez le flux des contributions open source</h2>
         <p class="text-secondary mb-0">
-          Prioritize GitHub issues, track ownership signals, and keep the contribution pipeline
-          visible from discovery through completion.
+          Priorisez les issues GitHub, suivez les signaux de responsabilité et gardez le pipeline
+          de contribution visible de la découverte à la finalisation.
         </p>
       </div>
       <div class="hero-meta">
-        <span class="meta-label">Operating model</span>
-        <strong>Centralized triage</strong>
+        <span class="meta-label">Mode de fonctionnement</span>
+        <strong>Triage centralisé</strong>
       </div>
     </section>
 
@@ -96,7 +96,7 @@ onMounted(() => {
           <span class="metric-icon bg-primary-subtle text-primary">
             <i class="bi bi-collection"></i>
           </span>
-          <span class="metric-label">Tracked tickets</span>
+          <span class="metric-label">Tickets suivis</span>
           <strong>{{ ticketsStore.total }}</strong>
         </div>
       </div>
@@ -105,7 +105,7 @@ onMounted(() => {
           <span class="metric-icon bg-info-subtle text-info">
             <i class="bi bi-building-check"></i>
           </span>
-          <span class="metric-label">Repositories</span>
+          <span class="metric-label">Dépôts</span>
           <strong>{{ activeRepositories }}</strong>
         </div>
       </div>
@@ -114,7 +114,7 @@ onMounted(() => {
           <span class="metric-icon bg-warning-subtle text-warning">
             <i class="bi bi-activity"></i>
           </span>
-          <span class="metric-label">In progress</span>
+          <span class="metric-label">En cours</span>
           <strong>{{ inProgress }}</strong>
         </div>
       </div>
@@ -123,7 +123,7 @@ onMounted(() => {
           <span class="metric-icon bg-success-subtle text-success">
             <i class="bi bi-check2-circle"></i>
           </span>
-          <span class="metric-label">Completed</span>
+          <span class="metric-label">Terminés</span>
           <strong>{{ ticketsStore.completed }}</strong>
         </div>
       </div>
@@ -134,8 +134,10 @@ onMounted(() => {
         <div class="enterprise-card sticky-xl-top form-card">
           <div class="card-header-block">
             <div>
-              <span class="section-kicker">Intake control</span>
-              <h3 class="h5 fw-bold mb-0">{{ isEditing ? 'Update ticket' : 'Register ticket' }}</h3>
+              <span class="section-kicker">Contrôle de l'arrivée</span>
+              <h3 class="h5 fw-bold mb-0">
+                {{ isEditing ? 'Mettre à jour le ticket' : 'Enregistrer un ticket' }}
+              </h3>
             </div>
             <span class="card-action-icon">
               <i class="bi bi-ticket-perforated"></i>
@@ -144,7 +146,7 @@ onMounted(() => {
 
           <form @submit.prevent="submitTicket">
             <div class="mb-3">
-              <label for="title" class="form-label fw-semibold">Title</label>
+              <label for="title" class="form-label fw-semibold">Titre</label>
               <input
                 id="title"
                 v-model.trim="form.title"
@@ -155,19 +157,19 @@ onMounted(() => {
             </div>
 
             <div class="mb-3">
-              <label for="repository" class="form-label fw-semibold">GitHub repository</label>
+              <label for="repository" class="form-label fw-semibold">Dépôt GitHub</label>
               <input
                 id="repository"
                 v-model.trim="form.repository"
                 class="form-control"
                 required
                 maxlength="120"
-                placeholder="owner/repository"
+                placeholder="proprietaire/depot"
               />
             </div>
 
             <div class="mb-3">
-              <label for="link" class="form-label fw-semibold">Issue link</label>
+              <label for="link" class="form-label fw-semibold">Lien de l'issue</label>
               <input
                 id="link"
                 v-model.trim="form.link"
@@ -180,7 +182,7 @@ onMounted(() => {
             </div>
 
             <div class="mb-4">
-              <label for="status" class="form-label fw-semibold">Status</label>
+              <label for="status" class="form-label fw-semibold">Statut</label>
               <select id="status" v-model="form.status" class="form-select" required>
                 <option v-for="status in statuses" :key="status.value" :value="status.value">
                   {{ status.label }}
@@ -199,7 +201,7 @@ onMounted(() => {
                   class="spinner-border spinner-border-sm me-2"
                   aria-hidden="true"
                 ></span>
-                {{ isEditing ? 'Save changes' : 'Add ticket' }}
+                {{ isEditing ? 'Enregistrer les modifications' : 'Ajouter le ticket' }}
               </button>
               <button
                 v-if="isEditing"
@@ -207,7 +209,7 @@ onMounted(() => {
                 type="button"
                 @click="resetForm"
               >
-                Cancel edit
+                Annuler la modification
               </button>
             </div>
           </form>
@@ -218,15 +220,17 @@ onMounted(() => {
         <div class="enterprise-card">
           <div class="card-header-block border-bottom pb-3 mb-0">
             <div>
-              <span class="section-kicker">Ticket register</span>
-              <h3 class="h5 fw-bold mb-0">Portfolio backlog</h3>
+              <span class="section-kicker">Registre des tickets</span>
+              <h3 class="h5 fw-bold mb-0">Backlog du portefeuille</h3>
             </div>
-            <span class="readiness-pill"> {{ ticketsStore.readyToStart }} ready for triage </span>
+            <span class="readiness-pill">
+              {{ ticketsStore.readyToStart }} prêts pour le triage
+            </span>
           </div>
 
           <div v-if="ticketsStore.loading" class="text-center py-5">
             <div class="spinner-border text-primary" role="status">
-              <span class="visually-hidden">Loading...</span>
+              <span class="visually-hidden">Chargement...</span>
             </div>
           </div>
 
@@ -236,8 +240,10 @@ onMounted(() => {
 
           <div v-else-if="ticketsStore.tickets.length === 0" class="empty-state">
             <i class="bi bi-inbox"></i>
-            <h4 class="h5 fw-bold">No tickets registered</h4>
-            <p class="text-secondary mb-0">Add a GitHub issue to begin tracking the portfolio.</p>
+            <h4 class="h5 fw-bold">Aucun ticket enregistré</h4>
+            <p class="text-secondary mb-0">
+              Ajoutez une issue GitHub pour commencer à suivre le portefeuille.
+            </p>
           </div>
 
           <div v-else class="table-responsive">
@@ -245,8 +251,8 @@ onMounted(() => {
               <thead>
                 <tr>
                   <th scope="col">Ticket</th>
-                  <th scope="col">Repository</th>
-                  <th scope="col">Status</th>
+                  <th scope="col">Dépôt</th>
+                  <th scope="col">Statut</th>
                   <th scope="col" class="text-end">Actions</th>
                 </tr>
               </thead>
@@ -256,7 +262,7 @@ onMounted(() => {
                     <div class="fw-bold">{{ ticket.title }}</div>
                     <a :href="ticket.link" target="_blank" rel="noreferrer" class="issue-link">
                       <i class="bi bi-box-arrow-up-right me-1"></i>
-                      Open issue
+                      Ouvrir l'issue
                     </a>
                   </td>
                   <td>
@@ -281,7 +287,7 @@ onMounted(() => {
                         @click="editTicket(ticket)"
                       >
                         <i class="bi bi-pencil me-1"></i>
-                        Edit
+                        Modifier
                       </button>
                       <button
                         class="btn btn-outline-danger btn-sm"
@@ -289,7 +295,7 @@ onMounted(() => {
                         @click="removeTicket(ticket)"
                       >
                         <i class="bi bi-trash me-1"></i>
-                        Remove
+                        Supprimer
                       </button>
                     </div>
                   </td>

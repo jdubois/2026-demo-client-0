@@ -10,7 +10,7 @@ import { RouterView } from 'vue-router'
           <i class="bi bi-kanban"></i>
         </span>
         <div>
-          <span class="brand-eyebrow">Enterprise</span>
+          <span class="brand-eyebrow">Entreprise</span>
           <strong>TicketOps</strong>
         </div>
       </div>
@@ -18,42 +18,44 @@ import { RouterView } from 'vue-router'
       <nav class="nav flex-column sidebar-nav">
         <a class="nav-link active" href="#">
           <i class="bi bi-grid-1x2"></i>
-          Dashboard
+          Tableau de bord
         </a>
         <a class="nav-link" href="#">
           <i class="bi bi-diagram-3"></i>
-          Repositories
+          Dépôts
         </a>
         <a class="nav-link" href="#">
           <i class="bi bi-bar-chart-line"></i>
-          Reporting
+          Rapports
         </a>
         <a class="nav-link" href="#">
           <i class="bi bi-shield-check"></i>
-          Governance
+          Gouvernance
         </a>
       </nav>
 
       <div class="sidebar-footer">
         <span class="status-dot"></span>
-        <span>Production workspace</span>
+        <span>Espace de production</span>
       </div>
     </aside>
 
     <div class="workspace">
       <header class="topbar">
         <div>
-          <p class="text-uppercase text-secondary fw-bold small mb-1">Ticket management suite</p>
-          <h1 class="h3 fw-bold mb-0">Contribution portfolio</h1>
+          <p class="text-uppercase text-secondary fw-bold small mb-1">
+            Suite de gestion des tickets
+          </p>
+          <h1 class="h3 fw-bold mb-0">Portefeuille de contributions</h1>
         </div>
         <div class="topbar-actions">
           <span class="badge rounded-pill text-bg-light border">
             <i class="bi bi-github me-1"></i>
-            GitHub synchronized
+            Synchronisé avec GitHub
           </span>
           <button class="btn btn-dark" type="button">
             <i class="bi bi-sliders me-2"></i>
-            Controls
+            Contrôles
           </button>
         </div>
       </header>
