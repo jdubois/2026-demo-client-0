@@ -10,6 +10,7 @@ public record TicketRequest(
     @NotBlank @Size(max = 240) String title,
     @NotBlank @Size(max = 120) String repository,
     @NotBlank @Size(max = 500) @Pattern(regexp = "https://github\\.com/.+/.+/issues/\\d+") String link,
-    @NotNull TicketStatus status
+    @NotNull TicketStatus status,
+    @NotNull Long assigneeId
 ) {
 }

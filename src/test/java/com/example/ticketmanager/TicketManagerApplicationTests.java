@@ -34,7 +34,19 @@ class TicketManagerApplicationTests {
             .perform(get("/api/tickets"))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$", hasSize(10)))
-            .andExpect(jsonPath("$[0].repository").value("Antafes/Vampire-Editor"));
+            .andExpect(jsonPath("$[0].repository").value("Antafes/Vampire-Editor"))
+            .andExpect(jsonPath("$[0].assignee.username").value("julien"));
+    }
+
+    @Test
+    void seededUsersAreAvailableFromTheApi() throws Exception {
+        mockMvc
+            .perform(get("/api/users"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(3)))
+            .andExpect(jsonPath("$[0].username").value("alice"))
+            .andExpect(jsonPath("$[1].username").value("bob"))
+            .andExpect(jsonPath("$[2].username").value("julien"));
     }
 
 }

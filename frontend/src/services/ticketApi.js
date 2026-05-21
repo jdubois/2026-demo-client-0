@@ -1,4 +1,5 @@
-const baseUrl = '/api/tickets'
+const ticketsUrl = '/api/tickets'
+const usersUrl = '/api/users'
 
 async function request(url, options = {}) {
   const response = await fetch(url, {
@@ -22,25 +23,29 @@ async function request(url, options = {}) {
 }
 
 export function findTickets() {
-  return request(baseUrl)
+  return request(ticketsUrl)
+}
+
+export function findUsers() {
+  return request(usersUrl)
 }
 
 export function createTicket(ticket) {
-  return request(baseUrl, {
+  return request(ticketsUrl, {
     method: 'POST',
     body: JSON.stringify(ticket),
   })
 }
 
 export function updateTicket(ticket) {
-  return request(`${baseUrl}/${ticket.id}`, {
+  return request(`${ticketsUrl}/${ticket.id}`, {
     method: 'PUT',
     body: JSON.stringify(ticket),
   })
 }
 
 export function deleteTicket(id) {
-  return request(`${baseUrl}/${id}`, {
+  return request(`${ticketsUrl}/${id}`, {
     method: 'DELETE',
   })
 }

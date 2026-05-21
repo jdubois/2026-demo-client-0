@@ -10,6 +10,7 @@ const emptyForm = {
   repository: '',
   link: '',
   status: 'NEW',
+  assigneeId: '',
 }
 
 const form = reactive({ ...emptyForm })
@@ -34,7 +35,14 @@ function resetForm() {
 }
 
 function editTicket(ticket) {
-  Object.assign(form, ticket)
+  Object.assign(form, {
+    id: ticket.id,
+    title: ticket.title,
+    repository: ticket.repository,
+    link: ticket.link,
+    status: ticket.status,
+    assigneeId: ticket.assignee?.id ?? '',
+  })
   actionError.value = ''
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
@@ -67,7 +75,7 @@ async function removeTicket(ticket) {
 }
 
 onMounted(() => {
-  ticketsStore.loadTickets().catch((error) => {
+  Promise.all([ticketsStore.loadUsers(), ticketsStore.loadTickets()]).catch((error) => {
     actionError.value = error.message
   })
 })
@@ -190,6 +198,16 @@ onMounted(() => {
               </select>
             </div>
 
+            <div class="mb-4">
+              <label for="assignee" class="form-label fw-semibold">Assigné à</label>
+              <select id="assignee" v-model="form.assigneeId" class="form-select" required>
+                <option disabled value="">Choisir un utilisateur</option>
+                <option v-for="user in ticketsStore.users" :key="user.id" :value="user.id">
+                  {{ user.username }}
+                </option>
+              </select>
+            </div>
+
             <div v-if="actionError" class="alert alert-danger" role="alert">
               {{ actionError }}
             </div>
@@ -252,6 +270,7 @@ onMounted(() => {
                 <tr>
                   <th scope="col">Ticket</th>
                   <th scope="col">Dépôt</th>
+                  <th scope="col">Assigné à</th>
                   <th scope="col">Statut</th>
                   <th scope="col" class="text-end">Actions</th>
                 </tr>
@@ -269,6 +288,12 @@ onMounted(() => {
                     <span class="repo-name">
                       <i class="bi bi-github me-2"></i>
                       {{ ticket.repository }}
+                    </span>
+                  </td>
+                  <td>
+                    <span class="assignee-name">
+                      <i class="bi bi-person-circle me-2"></i>
+                      {{ ticket.assignee.username }}
                     </span>
                   </td>
                   <td>
@@ -443,6 +468,11 @@ onMounted(() => {
 }
 
 .repo-name {
+  color: #475569;
+  font-weight: 600;
+}
+
+.assignee-name {
   color: #475569;
   font-weight: 600;
 }
