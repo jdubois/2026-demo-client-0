@@ -21,6 +21,12 @@ const statusByValue = computed(() =>
 )
 
 const isEditing = computed(() => form.id !== null)
+const inProgress = computed(
+  () => ticketsStore.tickets.filter((ticket) => ticket.status === 'IN_PROGRESS').length,
+)
+const activeRepositories = computed(
+  () => new Set(ticketsStore.tickets.map((ticket) => ticket.repository)).size,
+)
 
 function resetForm() {
   Object.assign(form, emptyForm)
@@ -68,16 +74,72 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="row g-4">
-    <section class="col-lg-4">
-      <div class="card border-0 shadow-lg sticky-lg-top form-card">
-        <div class="card-body p-4">
-          <div class="d-flex align-items-center justify-content-between mb-4">
+  <div class="dashboard">
+    <section class="dashboard-hero">
+      <div>
+        <span class="section-kicker">Executive overview</span>
+        <h2 class="display-6 fw-bold mb-2">Govern open-source contribution intake</h2>
+        <p class="text-secondary mb-0">
+          Prioritize GitHub issues, track ownership signals, and keep the contribution pipeline
+          visible from discovery through completion.
+        </p>
+      </div>
+      <div class="hero-meta">
+        <span class="meta-label">Operating model</span>
+        <strong>Centralized triage</strong>
+      </div>
+    </section>
+
+    <section class="row g-3">
+      <div class="col-sm-6 col-xl-3">
+        <div class="metric-card">
+          <span class="metric-icon bg-primary-subtle text-primary">
+            <i class="bi bi-collection"></i>
+          </span>
+          <span class="metric-label">Tracked tickets</span>
+          <strong>{{ ticketsStore.total }}</strong>
+        </div>
+      </div>
+      <div class="col-sm-6 col-xl-3">
+        <div class="metric-card">
+          <span class="metric-icon bg-info-subtle text-info">
+            <i class="bi bi-building-check"></i>
+          </span>
+          <span class="metric-label">Repositories</span>
+          <strong>{{ activeRepositories }}</strong>
+        </div>
+      </div>
+      <div class="col-sm-6 col-xl-3">
+        <div class="metric-card">
+          <span class="metric-icon bg-warning-subtle text-warning">
+            <i class="bi bi-activity"></i>
+          </span>
+          <span class="metric-label">In progress</span>
+          <strong>{{ inProgress }}</strong>
+        </div>
+      </div>
+      <div class="col-sm-6 col-xl-3">
+        <div class="metric-card">
+          <span class="metric-icon bg-success-subtle text-success">
+            <i class="bi bi-check2-circle"></i>
+          </span>
+          <span class="metric-label">Completed</span>
+          <strong>{{ ticketsStore.completed }}</strong>
+        </div>
+      </div>
+    </section>
+
+    <div class="row g-4 align-items-start">
+      <section class="col-xl-4">
+        <div class="enterprise-card sticky-xl-top form-card">
+          <div class="card-header-block">
             <div>
-              <p class="text-uppercase text-primary fw-bold small mb-1">Ticket details</p>
-              <h2 class="h4 fw-bold mb-0">{{ isEditing ? 'Edit ticket' : 'Add ticket' }}</h2>
+              <span class="section-kicker">Intake control</span>
+              <h3 class="h5 fw-bold mb-0">{{ isEditing ? 'Update ticket' : 'Register ticket' }}</h3>
             </div>
-            <i class="bi bi-ticket-perforated fs-2 text-primary"></i>
+            <span class="card-action-icon">
+              <i class="bi bi-ticket-perforated"></i>
+            </span>
           </div>
 
           <form @submit.prevent="submitTicket">
@@ -131,7 +193,7 @@ onMounted(() => {
             </div>
 
             <div class="d-grid gap-2">
-              <button class="btn btn-primary btn-lg" type="submit" :disabled="saving">
+              <button class="btn btn-dark btn-lg" type="submit" :disabled="saving">
                 <span
                   v-if="saving"
                   class="spinner-border spinner-border-sm me-2"
@@ -150,99 +212,160 @@ onMounted(() => {
             </div>
           </form>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="col-lg-8">
-      <div class="row g-3 mb-4">
-        <div class="col-md-4">
-          <div class="metric-card">
-            <span class="metric-label">Tracked tickets</span>
-            <strong>{{ ticketsStore.total }}</strong>
+      <section class="col-xl-8">
+        <div class="enterprise-card">
+          <div class="card-header-block border-bottom pb-3 mb-0">
+            <div>
+              <span class="section-kicker">Ticket register</span>
+              <h3 class="h5 fw-bold mb-0">Portfolio backlog</h3>
+            </div>
+            <span class="readiness-pill"> {{ ticketsStore.readyToStart }} ready for triage </span>
+          </div>
+
+          <div v-if="ticketsStore.loading" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+          </div>
+
+          <div v-else-if="ticketsStore.error" class="alert alert-danger mt-4" role="alert">
+            {{ ticketsStore.error }}
+          </div>
+
+          <div v-else-if="ticketsStore.tickets.length === 0" class="empty-state">
+            <i class="bi bi-inbox"></i>
+            <h4 class="h5 fw-bold">No tickets registered</h4>
+            <p class="text-secondary mb-0">Add a GitHub issue to begin tracking the portfolio.</p>
+          </div>
+
+          <div v-else class="table-responsive">
+            <table class="table enterprise-table align-middle mb-0">
+              <thead>
+                <tr>
+                  <th scope="col">Ticket</th>
+                  <th scope="col">Repository</th>
+                  <th scope="col">Status</th>
+                  <th scope="col" class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="ticket in ticketsStore.tickets" :key="ticket.id">
+                  <td>
+                    <div class="fw-bold">{{ ticket.title }}</div>
+                    <a :href="ticket.link" target="_blank" rel="noreferrer" class="issue-link">
+                      <i class="bi bi-box-arrow-up-right me-1"></i>
+                      Open issue
+                    </a>
+                  </td>
+                  <td>
+                    <span class="repo-name">
+                      <i class="bi bi-github me-2"></i>
+                      {{ ticket.repository }}
+                    </span>
+                  </td>
+                  <td>
+                    <span
+                      class="badge rounded-pill status-badge"
+                      :class="statusByValue[ticket.status].className"
+                    >
+                      {{ statusByValue[ticket.status].label }}
+                    </span>
+                  </td>
+                  <td>
+                    <div class="d-flex justify-content-end gap-2">
+                      <button
+                        class="btn btn-outline-primary btn-sm"
+                        type="button"
+                        @click="editTicket(ticket)"
+                      >
+                        <i class="bi bi-pencil me-1"></i>
+                        Edit
+                      </button>
+                      <button
+                        class="btn btn-outline-danger btn-sm"
+                        type="button"
+                        @click="removeTicket(ticket)"
+                      >
+                        <i class="bi bi-trash me-1"></i>
+                        Remove
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
-        <div class="col-md-4">
-          <div class="metric-card">
-            <span class="metric-label">Ready to help</span>
-            <strong>{{ ticketsStore.readyToStart }}</strong>
-          </div>
-        </div>
-        <div class="col-md-4">
-          <div class="metric-card">
-            <span class="metric-label">Completed</span>
-            <strong>{{ ticketsStore.completed }}</strong>
-          </div>
-        </div>
-      </div>
-
-      <div v-if="ticketsStore.loading" class="text-center py-5">
-        <div class="spinner-border text-primary" role="status">
-          <span class="visually-hidden">Loading...</span>
-        </div>
-      </div>
-
-      <div v-else-if="ticketsStore.error" class="alert alert-danger" role="alert">
-        {{ ticketsStore.error }}
-      </div>
-
-      <div v-else class="ticket-grid">
-        <article v-for="ticket in ticketsStore.tickets" :key="ticket.id" class="ticket-card">
-          <div class="d-flex align-items-start justify-content-between gap-3">
-            <span class="badge rounded-pill" :class="statusByValue[ticket.status].className">
-              {{ statusByValue[ticket.status].label }}
-            </span>
-            <a :href="ticket.link" target="_blank" rel="noreferrer" class="btn btn-sm btn-light">
-              <i class="bi bi-box-arrow-up-right me-1"></i>
-              GitHub
-            </a>
-          </div>
-
-          <h3 class="h5 fw-bold mt-3 mb-2">{{ ticket.title }}</h3>
-          <p class="repo-name mb-4">
-            <i class="bi bi-github me-2"></i>
-            {{ ticket.repository }}
-          </p>
-
-          <div class="d-flex gap-2">
-            <button
-              class="btn btn-outline-primary btn-sm"
-              type="button"
-              @click="editTicket(ticket)"
-            >
-              <i class="bi bi-pencil me-1"></i>
-              Edit
-            </button>
-            <button
-              class="btn btn-outline-danger btn-sm"
-              type="button"
-              @click="removeTicket(ticket)"
-            >
-              <i class="bi bi-trash me-1"></i>
-              Remove
-            </button>
-          </div>
-        </article>
-      </div>
-    </section>
+      </section>
+    </div>
   </div>
 </template>
 
 <style scoped>
-.form-card {
-  top: 1.5rem;
-  border-radius: 1.25rem;
+.dashboard {
+  display: grid;
+  gap: 1.5rem;
 }
 
-.metric-card,
-.ticket-card {
-  border: 1px solid rgba(99, 102, 241, 0.12);
-  border-radius: 1.25rem;
-  background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 18px 48px rgba(15, 23, 42, 0.08);
+.dashboard-hero,
+.enterprise-card,
+.metric-card {
+  border: 1px solid #d8e2ef;
+  border-radius: 1rem;
+  background: #ffffff;
+  box-shadow: 0 20px 55px rgba(15, 23, 42, 0.07);
+}
+
+.dashboard-hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1.75rem;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0.08), rgba(14, 165, 233, 0.02)), #ffffff;
+}
+
+.section-kicker {
+  display: block;
+  color: #2563eb;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.hero-meta {
+  min-width: 14rem;
+  padding: 1rem;
+  border: 1px solid #dbeafe;
+  border-radius: 0.875rem;
+  background: #f8fbff;
+}
+
+.meta-label {
+  display: block;
+  color: #64748b;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 .metric-card {
-  padding: 1.25rem;
+  display: grid;
+  gap: 0.4rem;
+  padding: 1.35rem;
+}
+
+.metric-icon {
+  display: grid;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-bottom: 0.35rem;
+  place-items: center;
+  border-radius: 0.8rem;
+  font-size: 1.2rem;
 }
 
 .metric-label {
@@ -255,30 +378,100 @@ onMounted(() => {
 }
 
 .metric-card strong {
-  color: #312e81;
-  font-size: 2.25rem;
+  color: #0f172a;
+  font-size: 2rem;
   line-height: 1;
 }
 
-.ticket-grid {
-  display: grid;
+.enterprise-card {
+  padding: 1.5rem;
+}
+
+.form-card {
+  top: 1.5rem;
+}
+
+.card-header-block {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-.ticket-card {
-  padding: 1.25rem;
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+.card-action-icon {
+  display: grid;
+  width: 2.75rem;
+  height: 2.75rem;
+  place-items: center;
+  border-radius: 0.85rem;
+  color: #2563eb;
+  background: #eff6ff;
+  font-size: 1.25rem;
 }
 
-.ticket-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 24px 70px rgba(49, 46, 129, 0.16);
+.readiness-pill {
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  color: #075985;
+  background: #e0f2fe;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.enterprise-table {
+  --bs-table-bg: transparent;
+}
+
+.enterprise-table thead th {
+  color: #64748b;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.enterprise-table tbody td {
+  padding: 1rem 0.75rem;
+  border-color: #e2e8f0;
 }
 
 .repo-name {
-  color: #64748b;
+  color: #475569;
   font-weight: 600;
+}
+
+.issue-link {
+  color: #2563eb;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.status-badge {
+  min-width: 6.5rem;
+}
+
+.empty-state {
+  display: grid;
+  place-items: center;
+  padding: 3.5rem 1rem;
+  text-align: center;
+}
+
+.empty-state i {
+  color: #94a3b8;
+  font-size: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+@media (max-width: 767.98px) {
+  .dashboard-hero {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .hero-meta {
+    min-width: 0;
+  }
 }
 </style>
